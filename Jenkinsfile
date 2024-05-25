@@ -4,6 +4,9 @@ pipeline {
             label 'ubuntu'
             }
       }
+    triggers {
+        pollSCM '* * * * *'
+    }
     stages {
         stage("Print ENV") {
            steps {
