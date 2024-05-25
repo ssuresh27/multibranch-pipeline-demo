@@ -1,0 +1,13 @@
+--- 
+- name: Transfer the local files to remote server using ssh
+  hosts: all
+
+  tasks:
+  - name: Copy file demo.txt to remote
+    ansible.builtin.copy:
+      src: "{{ item }}"
+      dest: "/var/lib/jenkins/{{ item }}"
+      remote_src: no
+      backup: yes
+    with_items:
+      - frogs.txt
