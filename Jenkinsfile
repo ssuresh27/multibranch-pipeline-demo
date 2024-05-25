@@ -8,7 +8,7 @@ pipeline {
         stage(" execute Ansible") {
            steps {
                 echo 'Pulling...' + env.BRANCH_NAME
-                echo 'Pulling..._'env.BRANCH_NAME'.yml'
+                echo 'Pulling..._'+env.BRANCH_NAME+'.yml'
             }    
         }    
     }
