@@ -5,7 +5,7 @@ pipeline {
             }
       }
     triggers {
-        pollSCM '* * * * *'
+        githubPush()
     }
     stages {
         stage("Print ENV") {
