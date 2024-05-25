@@ -1,69 +1,24 @@
 pipeline {
-
-    agent {
+    agent { 
         node {
             label 'ubuntu'
-        }
+            }
+      }
+    triggers {
+        pollSCM '* * * * *'
     }
-
-    options {
-        buildDiscarder logRotator( 
-                    daysToKeepStr: '16', 
-                    numToKeepStr: '10'
-            )
-    }
-
     stages {
-        
-        stage('Cleanup Workspace') {
+        stage("Print ENV") {
+           steps {
+                echo 'Pulling...' + env.BRANCH_NAME
+                echo 'Pulling..._'+env.BRANCH_NAME+'.yml'
+                sh 'printenv'
+            }    
+        }    
+        stage("Execute Ansible Play") {
             steps {
-                cleanWs()
-                sh """
-                echo "Cleaned Up Workspace For Project"
-                """
-            }
-        }
-
-        stage('Code Checkout') {
-            steps {
-                checkout([
-                    $class: 'GitSCM', 
-                    branches: [[name: '*/main']], 
-                    userRemoteConfigs: [[url: 'https://github.com/spring-projects/spring-petclinic.git']]
-                ])
-            }
-        }
-
-        stage(' Unit Testing') {
-            steps {
-                sh """
-                echo "Running Unit Tests"
-                """
-            }
-        }
-
-        stage('Code Analysis') {
-            steps {
-                sh """
-                echo "Running Code Analysis"
-                """
-            }
-        }
-
-        stage('Build Deploy Code') {
-            when {
-                branch 'develop'
-            }
-            steps {
-                sh """
-                echo "Building Artifact"
-                """
-
-                sh """
-                echo "Deploying Code"
-                """
-            }
-        }
-
-    }   
+                ansiblePlaybook colorized: true, credentialsId: 'jenkins-agent', disableHostKeyChecking: true, installation: 'Ansible', inventory: 'inventory_'+env.BRANCH_NAME, playbook: 'tranfer_file_'+env.BRANCH_NAME+'.yaml', vaultTmpPath: ''
+            }      
+        }    
+    }
 }
