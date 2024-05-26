@@ -26,6 +26,8 @@ pipeline {
             {
             sh """
             touch testfile
+            git config --local user.name '${GIT_USERNAME}'
+            git config --local user.email '${GIT_USERNAME}@gmail.com'
             git add testfile
             git commit -m 'Add testfile from Jenkins Pipeline'
             git push -u origin ${env.BRANCH_NAME}
