@@ -13,21 +13,26 @@ pipeline {
                 echo 'Pulling...' + env.BRANCH_NAME
                 echo 'Pulling..._'+env.BRANCH_NAME+'.yml'
                 sh 'printenv'
-                // Read the console log
-                def consoleLog = Jenkins.getInstance().getItemByFullName(env.JOB_NAME).getBuildByNumber(Integer.parseInt(env.BUILD_NUMBER)).logFile.text
-                //Write the log to a file
-                writeFile(file: "Log_${BUILD_NUMBER}.txt", text: consoleLog, encoding: "UTF-8")
-                sh'''
-                git add *
-                git commit -m "Add console log"
-                git push
-                '''
-            }    
-        }    
+        } 
+        }  
         stage("Execute Ansible Play") {
             steps {
                  ansiblePlaybook colorized: true, credentialsId: 'jenkins-agent', disableHostKeyChecking: true, installation: 'Ansible', inventory: 'inventory_'+env.BRANCH_NAME, playbook: 'tranfer_file_'+env.BRANCH_NAME+'.yml', vaultTmpPath: ''
             }      
-        }    
+        }
+        stage('Publish artefacts') {
+            steps {
+            withCredentials([
+            usernamePassword(credentialsId: JENKINS_GITHUB_CREDENTIALS_ID, usernameVariable: "GIT_USERNAME", passwordVariable: "GIT_PASSWORD")]) 
+            {
+            sh """
+            git config --local credential.helper "!f() { echo username='${GIT_USERNAME}'; echo password='${GIT_PASSWORD}'; }; f"
+            git config --local user.name '${GIT_USERNAME}'
+            git config --local user.email '${GIT_USERNAME}@example.tld'
+            make docs-publish
+            """
+        }
+      }    
+    }
     }
 }
