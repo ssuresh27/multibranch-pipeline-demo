@@ -26,6 +26,7 @@ pipeline {
             {
             sh """
             touch testfile
+            git remote add origin ${GIT_URL}
             git add testfile
             git commit -m 'Add testfile from Jenkins Pipeline'
             git push origin ${env.BRANCH_NAME}
