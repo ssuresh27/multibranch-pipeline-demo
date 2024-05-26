@@ -22,15 +22,12 @@ pipeline {
         }
         stage('Publish artefacts') {
             steps {
-            withCredentials([gitUsernamePassword(credentialsId: 'git-ss', usernameVariable: "GIT_USERNAME", passwordVariable: "GIT_PASSWORD")]) 
-            {
             sh """
             touch testfile
             git add testfile
             git commit -m 'Add testfile from Jenkins Pipeline'
             git push origin HEAD:${env.BRANCH_NAME}
             """
-        }
       }    
     }
     }
