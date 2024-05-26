@@ -22,7 +22,7 @@ pipeline {
         }
         stage('Publish artefacts') {
             steps {
-            withCredentials([gitUsernamePassword(credentialsId: 'git-ss', usernameVariable: "GIT_USERNAME", passwordVariable: "GIT_PASSWORD")]) 
+            withCredentials([gitUsernamePassword(usernameVariable: "GIT_USERNAME", passwordVariable: "GIT_PASSWORD")]) 
             {
             sh """
             touch testfile
