@@ -28,7 +28,7 @@ pipeline {
             touch testfile
             git add testfile
             git commit -m 'Add testfile from Jenkins Pipeline'
-            git push
+            git push origin HEAD:${env.BRANCH_NAME}
             """
         }
       }    
