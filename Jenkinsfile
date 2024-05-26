@@ -30,6 +30,7 @@ pipeline {
             git commit -m 'Add testfile from Jenkins Pipeline'
             git push origin HEAD:${env.BRANCH_NAME}
             """
+            }
       }    
     }
     }
