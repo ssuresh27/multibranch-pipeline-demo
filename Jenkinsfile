@@ -22,14 +22,13 @@ pipeline {
         }
         stage('Publish artefacts') {
             steps {
-            withCredentials([
-            usernamePassword(credentialsId: JENKINS_GITHUB_CREDENTIALS_ID, usernameVariable: "GIT_USERNAME", passwordVariable: "GIT_PASSWORD")]) 
+            withCredentials([gitUsernamePassword(credentialsId: 'git-ss', usernameVariable: "GIT_USERNAME", passwordVariable: "GIT_PASSWORD")]) 
             {
             sh """
-            git config --local credential.helper "!f() { echo username='${GIT_USERNAME}'; echo password='${GIT_PASSWORD}'; }; f"
-            git config --local user.name '${GIT_USERNAME}'
-            git config --local user.email '${GIT_USERNAME}@example.tld'
-            make docs-publish
+            touch testfile
+            git add testfile
+            git commit -m 'Add testfile from Jenkins Pipeline'
+            git push -u origin ${env.BRANCH_NAME}
             """
         }
       }    
